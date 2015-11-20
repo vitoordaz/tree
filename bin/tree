@@ -4,6 +4,6 @@ import tree.app
 
 
 app = tree.app.Application({
-  'mongodb_uri': 'mongodb://admin:d22l19rjyKtB3GVEuGjkqPzI5Zu5vcGe@54.175.82.66:27017'
+  'mongodb_uri': 'mongodb://localhost:27017'
 })
 app.run()

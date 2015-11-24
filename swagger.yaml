@@ -1,0 +1,166 @@
+swagger: '2.0'
+info:
+  title: Tree node API
+  description: Move your app forward with the Uber API
+  version: 1.0.0
+host: tree-node.example.com
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /tree:
+    post:
+      summary: Creates tree node.
+      description: This endpoints creates tree node with a given parameters.
+      operationId: addTreeNode
+      parameters:
+        - name: body
+          required: true
+          in: body
+          schema:
+            type: object
+            required:
+              - text
+            properties:
+              text:
+                type: string
+                description: Text for a node tree.
+              parent_id:
+                type: string
+                description: Id of a parent tree node.'
+      tags:
+        - Tree node
+      responses:
+        201:
+          description: Tree node created.
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                description: ID of the created tree node.
+        400:
+          description: Bad request.
+          schema:
+            type: object
+            properties:
+              errors:
+                type: object
+                properties:
+                  text:
+                    type: string
+                    description: Description why text is invalid.
+                  parent_id:
+                    type: string
+                    description: Description why parent_id is invalid.
+    get:
+      summary: Tree node.
+      description: This endpoints is used to search tree nodes by text search on text field.
+      parameters:
+        - name: search
+          in: query
+          description: String to search text fields.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Maximum number of items to return in response.
+          default: 10
+          required: false
+          type: number
+          format: integer
+        - name: offset
+          in: query
+          description: Number of items to skip.
+          default: 0
+          required: false
+          type: number
+          format: integer
+      tags:
+        - Tree node
+      responses:
+        200:
+          description: An array of tree nodes.
+          schema:
+            type: object
+            properties:
+              meta:
+                type: object
+                properties:
+                  total:
+                    type: number
+                    description: 'Total number of tree nodes for a given query.'
+                  limit:
+                    type: number
+                    description: 'Maximum number of items that API returns.'
+                  offset:
+                    type: number
+                    description: 'Number of items to skip.'
+              items:
+                type: array
+                items:
+                  $ref: '#/definitions/TreeNode'
+  /tree/{id}:
+    get:
+      summary: Returns sub tree by id of the parent tree node.
+      parameters:
+        - name: id
+          description: ID of the parent tree node.
+          in: path
+          required: true
+          type: string
+        - name: limit
+          in: query
+          description: Maximum number of items to return in response.
+          default: 10
+          required: false
+          type: number
+          format: integer
+        - name: offset
+          in: query
+          description: Number of items to skip.
+          default: 0
+          required: false
+          type: number
+          format: integer
+      tags: 
+        - Tree node
+      responses:
+        200:
+          description: An array of tree nodes.
+          schema:
+            type: object
+            properties:
+              meta:
+                type: object
+                properties:
+                  total:
+                    type: number
+                    description: 'Total number of tree nodes for a given query.'
+                  limit:
+                    type: number
+                    description: 'Maximum number of items that API returns.'
+                  offset:
+                    type: number
+                    description: 'Number of items to skip.'
+                items:
+                  type: array
+                  items:
+                    $ref: '#/definitions/TreeNode'
+        404:
+          description: Tree node with a given id not found.
+definitions:
+  TreeNode:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Tree node ID.
+      text:
+        type: string
+        description: Tree node text.
+      path:
+        type: string
+        description: Slash separated path to tree node.
